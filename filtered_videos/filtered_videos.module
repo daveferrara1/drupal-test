@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * Code for the Filtered Videos feature.
+ */
+
+include_once 'filtered_videos.features.inc';
+
+/**
+ * Implements hook_theme().
+ */
+function filtered_videos_theme($existing, $type, $theme, $path) {
+  // Override node.tpl.php.
+  return array(
+    'node__filtered_videos' => array(
+      'render element' => 'content',
+      'base hook' => 'node',
+      'template' => 'node--filtered_videos',
+      'path' => drupal_get_path('module', 'filtered_videos') . '/templates',
+    ),
+  );
+}
+
+/**
+ * Implements hook_node_view().
+ */
