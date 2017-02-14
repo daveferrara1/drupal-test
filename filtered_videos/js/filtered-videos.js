@@ -7,14 +7,13 @@
   Drupal.behaviors.uniqueName = {
     attach: function (context, settings) {
 
-      var button = document.getElementsByClassName('handle-load-videos'),
-          container = document.getElementById('filtered-videos'),
+      var button = $('.handle-load-videos'),
+          container = $('#filtered-videos'),
           auto = settings.filtered_videos.auto,
           sport = settings.filtered_videos.sport,
           school = settings.filtered_videos.school,
-          path = 'http://XXX=' + sport + '&school=' + school;
-
-      console.log('update path');
+          apiKey = '--ADD-API-KEY--',
+          path = 'https://api.themoviedb.org/3/movie/now_playing?api_key=' + apiKey + '&language=en-US&page=1';
 
       // Check auto.
       if (auto == 1) {
@@ -26,6 +25,7 @@
         // Wait for a button click.
         $(button).show();
         $(button).on('click', function () {
+          $(container).empty();
           loadVideos(path);
         });
       }
@@ -33,8 +33,11 @@
       // Video factory.
       var videoFactory = function (videoArray) {
         if (videoArray.length >= 1) {
+          $(container).append($('<ul>', {
+            'class': 'videoList'
+          }));
           $.each(videoArray, function (key, val) {
-            $(container).append(val);
+            $('.videoList').append(val);
           })
         }
       }
@@ -47,19 +50,25 @@
           if (this.readyState === 4) {
             if (this.status >= 200 && this.status < 400) {
               var data = JSON.parse(this.responseText);
-              var programs = data.programs;
+              var programs = data.results;
               // Make sure we have data.
               if (programs) {
                 $.each(programs, function(i) {
                   var title = programs[i].title;
-                  var url = programs[i].url;
-                  var img = programs[i].images.small;
-
+                  var url = '#';
+                  var img = 'https://image.tmdb.org/t/p/w500/' + programs[i].poster_path;
                   if (typeof title != 'undefined' && typeof url != 'undefined' && typeof img != 'undefined') {
-                    var content = '<a title="' + title + '" href="' + url + '"><img alt="' + title + '" src="' + img + '"></a>';
-                    videoArray.push(content);
+                    var $li = $('<li/>').append($('<h1>' + title + '</h1>')
+                      ).append($('<a/>',  {
+                        title: title,
+                        href: url,
+                      }).append($('<img/>', {
+                        alt: title,
+                        src: img
+                      }))
+                    );
+                    videoArray.push($li);
                   }
-
                 })
                 videoFactory(videoArray);
               }
@@ -71,5 +80,4 @@
       };
     }
   }
-
 })(jQuery);
