@@ -10,8 +10,6 @@
       var button = $('.handle-load-videos'),
           container = $('#filtered-videos'),
           auto = settings.filtered_videos.auto,
-          sport = settings.filtered_videos.sport,
-          school = settings.filtered_videos.school,
           apiKey = '--ADD-API-KEY--',
           path = 'https://api.themoviedb.org/3/movie/now_playing?api_key=' + apiKey + '&language=en-US&page=1';
 
